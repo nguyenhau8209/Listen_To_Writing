@@ -1,0 +1,75 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0; /* Màu nền */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #video-container {
+    margin: 20px;
+  }
+  #start-listening-btn {
+    display: block;
+    padding: 12px 24px;
+    border-radius: 20px;
+    border: none;
+    background-color: aqua;
+    color: black;
+  }
+  #practise {
+    display: none;
+  }
+  #subtitle-container {
+    margin: 20px;
+    text-align: left;
+    display: block; /* Ẩn phần này ban đầu */
+  }
+  #current-subtitle {
+    font-size: 24px;
+    margin: 10px 0;
+  }
+  #input {
+    width: 80%;
+    padding: 10px;
+    font-size: 18px;
+  }
+  #check-btn,
+  #skip-btn,
+  #prev-btn,
+  #next-btn,
+  #play-btn {
+    padding: 10px;
+    font-size: 18px;
+    margin: 10px;
+    background-color: #007bff; /* Màu nền cho nút */
+    color: white; /* Màu chữ cho nút */
+    border: none; /* Bỏ viền */
+    border-radius: 5px; /* Bo góc */
+    cursor: pointer; /* Con trỏ chuột */
+  }
+  #check-btn:hover,
+  #skip-btn:hover,
+  #prev-btn:hover,
+  #next-btn:hover,
+  #play-btn:hover {
+    background-color: #0056b3; /* Màu nền khi hover */
+  }
+  #correct-subtitle {
+    font-size: 18px;
+    color: red; /* Màu chữ cho thông báo */
+    display: none; /* Ẩn phần phụ đề đúng */
+  }
+
+  .control{
+    display: flex;
+    justify-content: flex-start;
+    justify-items: center;
+    align-items: center;
+  }
+  #input{
+    width: 300px;
+    border: 1px grey solid;
+    border-radius: 10px;
+    font-size: 14px;
+  }

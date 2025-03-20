@@ -4,62 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nghe Chép Văn Bản từ YouTube</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background-color: #f0f0f0; /* Màu nền */
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-      }
-      #video-container {
-        margin: 20px;
-      }
-      #subtitle-container {
-        margin: 20px;
-        text-align: left;
-      }
-      #current-subtitle {
-        font-size: 24px;
-        margin: 10px 0;
-      }
-      #input {
-        width: 80%;
-        padding: 10px;
-        font-size: 18px;
-      }
-      #check-btn,
-      #skip-btn,
-      #prev-btn,
-      #next-btn,
-      #play-btn {
-        padding: 10px;
-        font-size: 18px;
-        margin: 10px;
-        background-color: #007bff; /* Màu nền cho nút */
-        color: white; /* Màu chữ cho nút */
-        border: none; /* Bỏ viền */
-        border-radius: 5px; /* Bo góc */
-        cursor: pointer; /* Con trỏ chuột */
-      }
-      #check-btn:hover,
-      #skip-btn:hover,
-      #prev-btn:hover,
-      #next-btn:hover,
-      #play-btn:hover {
-        background-color: #0056b3; /* Màu nền khi hover */
-      }
-      #correct-subtitle {
-        font-size: 18px;
-        color: red; /* Màu chữ cho thông báo */
-        display: none; /* Ẩn phần phụ đề đúng */
-      }
-    </style>
+    <link rel="stylesheet" href="index.css" />
   </head>
   <body>
-    <h2>Nghe Chép Văn Bản từ Video YouTube</h2>
     <div id="video-container">
+      <h2>Nghe Chép Văn Bản từ Video YouTube</h2>
       <div id="player"></div>
     </div>
 
@@ -67,154 +16,41 @@
       <button id="start-listening-btn" onclick="startListening()">
         Bắt đầu Nghe
       </button>
-      <div id="current-subtitle"></div>
-      <input type="text" id="input" placeholder="Nhập lại câu phụ đề" />
-      <button id="check-btn" onclick="checkAnswer()">Kiểm tra</button>
-      <button id="skip-btn" onclick="skipSubtitle()">Bỏ qua</button>
-      <button id="prev-btn" onclick="prevSubtitle()">Câu trước</button>
-      <button id="next-btn" onclick="nextSubtitle()">Câu tiếp theo</button>
-      <button id="play-btn" onclick="playCurrentSubtitle()">Phát lại</button>
-      <p id="correct-subtitle"></p>
+      <div id="practise">
+        <div id="current-subtitle"></div>
+
+        <div class="control">
+          <button id="play-btn" onclick="playCurrentSubtitle()">
+            <i class="fa-solid fa-circle-play"></i>
+          </button>
+          <button id="prev-btn" onclick="prevSubtitle()">
+            <i class="fa-solid fa-backward"></i>
+          </button>
+          <button id="next-btn" onclick="nextSubtitle()">
+            <i class="fa-solid fa-forward"></i>
+          </button>
+        </div>
+        <input
+          type="text"
+          id="input"
+          placeholder="Nhập nội dung bạn nghe được ..."
+        />
+        <div>
+          <button id="check-btn" onclick="checkAnswer()">
+            <i class="fa-solid fa-check"></i>
+          </button>
+          <button id="skip-btn" onclick="skipSubtitle()">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </button>
+        </div>
+        <p id="correct-subtitle"></p>
+      </div>
     </div>
-
-    <p id="score">Điểm: 0</p>
-    <p id="message"></p>
-
     <script src="https://www.youtube.com/iframe_api"></script>
-    <script>
-      let player;
-      let currentSubtitleIndex = 0;
-      let subtitles = [];
-      let subtitleTimes = [];
-      let subtitleEndTimes = []; // Mảng lưu thời gian kết thúc
-
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player("player", {
-          height: "514",
-          width: "914",
-          videoId: "DZc_IvpHetw",
-          // events: {
-          //   onReady: onPlayerReady,
-          // },
-        });
-      }
-      onYouTubeIframeAPIReady();
-      function startListening() {
-        fetch("./public/subtitles/Deutsch lernen mit Dialogen_19.vtt")
-          .then((response) => response.text())
-          .then((data) => {
-            parseVTT(data);
-            displayCurrentSubtitle();
-          });
-      }
-
-      function parseVTT(data) {
-        const lines = data.split("\n");
-        for (let i = 0; i < lines.length; i++) {
-          if (lines[i].includes("-->")) {
-            const timeRange = lines[i].split(" --> ");
-            const startTime = convertToSeconds(timeRange[0]);
-            const endTime = convertToSeconds(timeRange[1]); // Thêm thời gian kết thúc
-            const text = lines[i + 1];
-            subtitles.push(text);
-            subtitleTimes.push(startTime);
-            subtitleEndTimes.push(endTime);
-            console.log("subtitleTimes ", subtitleTimes);
-            console.log("subtitleEndTimes ", subtitleEndTimes); // Lưu thời gian kết thúc
-            i++; // Bỏ qua dòng tiếp theo
-          }
-        }
-      }
-
-      function convertToSeconds(time) {
-        const parts = time.split(":");
-        let seconds = 0;
-
-        // Nếu có 3 phần tử (hh:mm:ss)
-        if (parts.length === 3) {
-          seconds += parseFloat(parts[0]) * 3600; // Giờ
-          seconds += parseFloat(parts[1]) * 60; // Phút
-          seconds += parseFloat(parts[2]); // Giây
-        }
-        // Nếu có 2 phần tử (mm:ss)
-        else if (parts.length === 2) {
-          seconds += parseFloat(parts[0]) * 60; // Phút
-          seconds += parseFloat(parts[1]); // Giây
-        }
-        // Nếu chỉ có 1 phần tử (giây)
-        else if (parts.length === 1) {
-          seconds += parseFloat(parts[0]); // Giây
-        }
-
-        return seconds;
-      }
-
-      function displayCurrentSubtitle() {
-        if (currentSubtitleIndex < subtitles.length) {
-          const currentSubtitle = subtitles[currentSubtitleIndex];
-          document.getElementById("current-subtitle").innerText = `${
-            currentSubtitleIndex + 1
-          }/${subtitles.length}: ${currentSubtitle}`;
-          player.seekTo(subtitleTimes[currentSubtitleIndex], true);
-          player.playVideo();
-          console.log(
-            "time: ",
-            (subtitleEndTimes[currentSubtitleIndex] -
-              subtitleTimes[currentSubtitleIndex]) *
-              1000
-          );
-          setTimeout(() => {
-            player.pauseVideo();
-            document.getElementById("correct-subtitle").innerText =
-              currentSubtitle;
-            document.getElementById("correct-subtitle").style.display = "block";
-          }, (subtitleEndTimes[currentSubtitleIndex] - subtitleTimes[currentSubtitleIndex]) * 1000); // Dừng video khi hết thời gian phụ đề
-        }
-      }
-
-      function checkAnswer() {
-        const userInput = document.getElementById("input").value;
-        const correctSubtitle = subtitles[currentSubtitleIndex];
-        if (userInput.trim() === "") {
-          document.getElementById("message").innerText = ""; // Không hiển thị thông báo nếu chưa nhập gì
-          return;
-        }
-        if (userInput.trim() === correctSubtitle) {
-          document.getElementById("message").innerText = "Đúng!";
-          document.getElementById("correct-subtitle").style.display = "none"; // Ẩn phụ đề đúng
-        } else {
-          document.getElementById("message").innerText =
-            "Sai! Câu đúng là: " + correctSubtitle;
-          document.getElementById("correct-subtitle").style.display = "block"; // Hiển thị phụ đề đúng
-        }
-      }
-
-      function skipSubtitle() {
-        currentSubtitleIndex++;
-        document.getElementById("input").value = ""; // Xóa ô nhập
-        document.getElementById("correct-subtitle").style.display = "none"; // Ẩn phụ đề đúng
-        document.getElementById("message").innerText = ""; // Xóa thông báo
-        displayCurrentSubtitle(); // Hiển thị câu tiếp theo
-      }
-
-      function prevSubtitle() {
-        if (currentSubtitleIndex > 0) {
-          currentSubtitleIndex--;
-          displayCurrentSubtitle();
-        }
-      }
-
-      function nextSubtitle() {
-        if (currentSubtitleIndex < subtitles.length - 1) {
-          currentSubtitleIndex++;
-          displayCurrentSubtitle();
-        }
-      }
-
-      function playCurrentSubtitle() {
-        player.seekTo(subtitleTimes[currentSubtitleIndex], true);
-        player.playVideo();
-      }
-    </script>
+    <script src="./script.js"></script>
+    <script
+      src="https://kit.fontawesome.com/9c4e90493c.js"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
