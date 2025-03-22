@@ -9,7 +9,8 @@ body {
     height: 100vh;
 }
 
-#video-container {
+#video-container,
+#subtitle-container {
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -45,18 +46,6 @@ h2 {
 #size-dropdown:hover,
 #toggle-visibility-btn:hover {
     background-color: #e0e0e0;
-}
-
-#subtitle-container {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 80%;
-    max-width: 800px;
-    margin: 10px;
-    box-sizing: border-box;
-    
 }
 
 .control {
@@ -107,11 +96,11 @@ h2 {
     padding: 10px;
     font-size: 18px;
     margin: 10px;
-    background-color: #007bff; /* Màu nền cho nút */
-    color: white; /* Màu chữ cho nút */
-    border: none; /* Bỏ viền */
-    border-radius: 5px; /* Bo góc */
-    cursor: pointer; /* Con trỏ chuột */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 #check-btn:hover,
@@ -119,7 +108,7 @@ h2 {
 #prev-btn:hover,
 #next-btn:hover,
 #play-btn:hover {
-    background-color: #0056b3; /* Màu nền khi hover */
+    background-color: #0056b3;
 }
 
 #player {
@@ -130,8 +119,65 @@ h2 {
     overflow: hidden;
 }
 
-.check{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.check {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Responsive adjustments for small screens */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column; /* Chuyển sang cột cho màn hình nhỏ */
+    }
+
+    #video-container,
+    #subtitle-container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    #current-subtitle {
+        font-size: 20px;
+    }
+
+    #check-btn,
+    #skip-btn,
+    #prev-btn,
+    #next-btn,
+    #play-btn {
+        font-size: 16px;
+        margin: 5px;
+    }
+
+    #input {
+        width: calc(100% - 20px);
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    #video-container,
+    #subtitle-container {
+        width: 95%;
+        padding: 10px;
+    }
+
+    #current-subtitle {
+        font-size: 18px;
+    }
+
+    #check-btn,
+    #skip-btn,
+    #prev-btn,
+    #next-btn,
+    #play-btn {
+        font-size: 14px;
+        margin: 3px;
+    }
+
+    #input {
+        width: calc(100% - 18px);
+        font-size: 12px;
+    }
 }
