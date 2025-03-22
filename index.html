@@ -10,6 +10,14 @@
     <div id="video-container">
       <h2>Nghe Chép Văn Bản từ Video YouTube</h2>
       <div id="player"></div>
+      <div class="video-controls">
+        <select id="size-dropdown">
+          <option value="small">Nhỏ</option>
+          <option value="medium">Trung bình</option>
+          <option value="large" selected>Lớn</option>
+        </select>
+        <button id="toggle-visibility-btn">Ẩn/Hiện video</button>
+      </div>
     </div>
 
     <div id="subtitle-container">
@@ -20,11 +28,11 @@
         <div id="current-subtitle"></div>
 
         <div class="control">
-          <button id="play-btn" onclick="playCurrentSubtitle()">
-            <i class="fa-solid fa-circle-play"></i>
-          </button>
           <button id="prev-btn" onclick="prevSubtitle()">
             <i class="fa-solid fa-backward"></i>
+          </button>
+          <button id="play-btn" onclick="playCurrentSubtitle()">
+            <i class="fa-solid fa-circle-play"></i>
           </button>
           <button id="next-btn" onclick="nextSubtitle()">
             <i class="fa-solid fa-forward"></i>
@@ -35,7 +43,7 @@
           id="input"
           placeholder="Nhập nội dung bạn nghe được ..."
         />
-        <div>
+        <div class="check">
           <button id="check-btn" onclick="checkAnswer()">
             <i class="fa-solid fa-check"></i>
           </button>

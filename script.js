@@ -28,15 +28,13 @@ function parseVTT(data) {
   const lines = data.split("\n");
   for (let i = 0; i < lines.length; i++) {
     if (lines[i].includes("-->")) {
-      const timeRange = lines[i].split(" --> ");
-      const startTime = convertToSeconds(timeRange[0]);
-      const endTime = convertToSeconds(timeRange[1]); // Thêm thời gian kết thúc
+      const [startTime, endTime] = lines[i]
+        .split(" --> ")
+        .map(convertToSeconds);
       const text = lines[i + 1];
       subtitles.push(text);
       subtitleTimes.push(startTime);
       subtitleEndTimes.push(endTime);
-      console.log("subtitleTimes ", subtitleTimes);
-      console.log("subtitleEndTimes ", subtitleEndTimes); // Lưu thời gian kết thúc
       i++; // Bỏ qua dòng tiếp theo
     }
   }
@@ -85,19 +83,17 @@ function displayCurrentSubtitle() {
 }
 
 function checkAnswer() {
-  const userInput = document.getElementById("input").value;
+  const userInput = document.getElementById("input").value.trim();
   const correctSubtitle = subtitles[currentSubtitleIndex];
 
-  if (userInput.trim() === "") {
-    document.getElementById("correct-subtitle").innerText = correctSubtitle; // Hiển thị phụ đề đúng với từ cần điền // Không hiển thị thông báo nếu chưa nhập gì
-  }
-
-  if (userInput.trim() === correctSubtitle) {
+  if (userInput === "") {
+    document.getElementById("correct-subtitle").innerText = correctSubtitle; // Hiển thị phụ đề đúng
+  } else if (userInput === correctSubtitle) {
     document.getElementById("correct-subtitle").style.display = "none"; // Ẩn phụ đề đúng
     document.getElementById("input").value = ""; // Xóa nội dung đã nhập trước đó
     nextSubtitle();
   } else {
-    document.getElementById("correct-subtitle").innerText = correctSubtitle; // Hiển thị phụ đề đúng với từ cần điền
+    document.getElementById("correct-subtitle").innerText = correctSubtitle; // Hiển thị phụ đề đúng
     document.getElementById("correct-subtitle").style.display = "block"; // Hiển thị phụ đề đúng
   }
 }
@@ -149,24 +145,61 @@ document.getElementById("input").addEventListener("input", function () {
 
 // Thêm sự kiện cho các phím Ctrl, mũi tên và Delete
 document.addEventListener("keydown", function (event) {
-  // Kiểm tra nếu phím Delete được nhấn
-  if (event.key === "Delete") {
-    nextSubtitle();
-    skipSubtitle(); // Bỏ qua phụ đề hiện tại
-  }
+  const inputElement = document.getElementById("input");
 
-  // Kiểm tra nếu phím Ctrl và phím mũi tên phải được nhấn
-  if (event.ctrlKey && event.key === "Control") {
-    playCurrentSubtitle(); // Phát lại phụ đề hiện tại
-  }
-
-  // Kiểm tra nếu phím mũi tên trái được nhấn
-  if (event.key === "ArrowLeft") {
-    prevSubtitle(); // Quay lại phụ đề trước
-  }
-
-  // Kiểm tra nếu phím mũi tên phải được nhấn
-  if (event.key === "ArrowRight") {
-    nextSubtitle(); // Qua phụ đề tiếp theo
+  // Kiểm tra nếu ô nhập không có tiêu điểm cho các phím khác
+  if (document.activeElement !== inputElement || event.ctrlKey) {
+    switch (event.key) {
+      case "Delete":
+        if (document.activeElement !== inputElement) {
+          skipSubtitle(); // Bỏ qua phụ đề hiện tại
+        }
+        break;
+      case "ArrowLeft":
+        if (document.activeElement !== inputElement) {
+          prevSubtitle(); // Quay lại phụ đề trước
+        }
+        break;
+      case "ArrowRight":
+        if (event.ctrlKey) {
+          playCurrentSubtitle(); // Phát lại phụ đề hiện tại
+        } else if (document.activeElement !== inputElement) {
+          nextSubtitle(); // Qua phụ đề tiếp theo
+        }
+        break;
+    }
   }
 });
+
+document
+  .getElementById("size-dropdown")
+  .addEventListener("change", function () {
+    const playerElement = document.getElementById("player");
+    const size = this.value;
+
+    switch (size) {
+      case "small":
+        playerElement.style.width = "457px";
+        playerElement.style.height = "257px";
+        break;
+      case "medium":
+        playerElement.style.width = "685px";
+        playerElement.style.height = "385px";
+        break;
+      case "large":
+        playerElement.style.width = "914px";
+        playerElement.style.height = "514px";
+        break;
+    }
+  });
+
+document
+  .getElementById("toggle-visibility-btn")
+  .addEventListener("click", function () {
+    const playerElement = document.getElementById("player");
+    if (playerElement.style.display === "none") {
+      playerElement.style.display = "block"; // Hiện video
+    } else {
+      playerElement.style.display = "none"; // Ẩn video
+    }
+  });
